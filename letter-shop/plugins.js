@@ -18,18 +18,18 @@ const XrpEscrowPlugin = require('ilp-plugin-xrp-escrow')
 
 // TODO Comment this out and uncomment the block below 
 // after adding valid plugin configurations
-exports.xrp = {
-  Customer: function () {
-    console.error(`No account configured yet for the Customer.` +
-               `See 'plugins.js'.`)
-    process.exit()
-  },
-  Shop: function () {
-    console.error(`No account configured yet for the Shop.` +
-               `See 'plugins.js'.`)
-    process.exit()
-  }
-}
+// exports.xrp = {
+//   Customer: function () {
+//     console.error(`No account configured yet for the Customer.` +
+//                `See 'plugins.js'.`)
+//     process.exit()
+//   },
+//   Shop: function () {
+//     console.error(`No account configured yet for the Shop.` +
+//                `See 'plugins.js'.`)
+//     process.exit()
+//   }
+// }
 /**
  * To get an account and secret to use for the tutorials:
  *   
@@ -40,21 +40,21 @@ exports.xrp = {
  *   5. Copy WEBSOCKETS address from the Test Net Servers info on the same page 
  */
 
-// exports.xrp = {
-//   Customer: function () {
-//     return new XrpEscrowPlugin({
-//       secret: '',
-//       account: '',
-//       server: 'wss://s.altnet.rippletest.net:51233',
-//       prefix: 'test.crypto.xrp.'
-//     })
-//   },
-//   Shop: function () {
-//     return new XrpEscrowPlugin({
-//       secret: '',
-//       account: '',
-//       server: 'wss://s.altnet.rippletest.net:51233',
-//       prefix: 'test.crypto.xrp.'
-//     })
-//   }
-// }
+exports.xrp = {
+  Customer: function () {
+    return new XrpEscrowPlugin({
+      secret: 'spjqSmMUbrLvxNmNNZaFYBnQb5fRP',
+      account: 'raWLJVw7LvXJubU66zumKhz5eaZJgFn4ag',
+      server: 'wss://s.altnet.rippletest.net:51233',
+      prefix: 'test.crypto.xrp.'
+    })
+  },
+  Shop: function () {
+    return new XrpEscrowPlugin({
+      secret: 'ssFC3kHJzqnDmJhPMVhATqQTagTZa',
+      account: 'r91VLxR8txAMppsvnffi8msvxRZyUiDsBT',
+      server: 'wss://s.altnet.rippletest.net:51233',
+      prefix: 'test.crypto.xrp.'
+    })
+  }
+}
