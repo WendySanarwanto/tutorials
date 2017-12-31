@@ -9,7 +9,8 @@
     "ilp-plugin-xrp-escrow": "github:michielbdejong/ilp-plugin-xrp-escrow#72e4178",
     "jsonlint": "^1.6.2",
     "node-fetch": "^1.7.3",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "chai": "^4.1.1",
@@ -22,6 +23,7 @@
     "mocha": "^3.4.1"
   },
   "scripts": {
+    "shop": "node shop.js",
     "test": "eslint ."
   },
   "repository": {
@@ -40,7 +42,9 @@
         "error",
         80
       ],
-      "no-unused-vars": ["off"]
+      "no-unused-vars": [
+        "off"
+      ]
     }
   }
 }
