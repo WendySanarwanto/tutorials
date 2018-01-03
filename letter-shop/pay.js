@@ -28,6 +28,7 @@ function base64url (buf) {
 const destinationAddress = process.argv[2];
 const destinationAmount = process.argv[3];
 const condition = process.argv[4];
+const shopServerPort = 18000;
 
 logger.info(`== Starting the payment client == `);
 logger.debug(`destinationAddress = ${destinationAddress}\ndestinationAmount = ${destinationAmount}\ncondition = ${condition}`);
@@ -64,5 +65,13 @@ plugin.connect().then(() => {
   }, (err) => {
     logger.error(err.message);
   });
+  
   // Listen for fulfillments...
+  // Handle fulfillments
+  plugin.on(`outgoing_fulfill`, (transferId, fulfillmentBase64) => {
+    logger.debug(`    - Transfer with ID=${transferId} is executed. Got fulfillment: ${fulfillmentBase64} `);
+    logger.debug(` 3. Collect your letter at http://localhost:${shopServerPort}/${fulfillmentBase64}`);
+    plugin.disconnect();
+    process.exit();
+  });
 });
