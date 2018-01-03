@@ -130,5 +130,56 @@ plugin.connect().then(() => {
     logger.info(` 3. Visit http://localhost:${httpServerPort} in your browser to buy a letter`)
   });
 
-  // TODO: Handle incoming transfers...
+  // Handle incoming payment...
+  plugin.on(`incoming_prepare`, (transfer) => {
+    const transferAmount = parseInt(transfer.amount);
+    if (transferAmount < cost) {
+      // Tranfer amount is incorrect
+      logger.debug(`    - Payment received for the wrong amount (${transfer.amount})... Rejected`);
+
+      const normalisedAmount = transfer.amount / Math.pow(10, parseInt(ledgerInfo.currencyScale));
+
+      plugin.rejectIncomingTransfer(transfer.id, {
+        code: 'F04',
+        name: 'Insufficient Destination Amount', 
+        message:  `Please send at least ${cost} ${ledgerInfo.currencyCode}, you sent ${normalizedAmount}`,
+        triggered_by: plugin.getAccount(),
+        triggered_at: new Date().toISOString(),
+        forwarded_by: [],
+        additional_info: {}
+      });
+    } else {
+      // Looking fulfillment from condition attached to incoming transfer
+      const fulfillment = fulfillments[transfer.executionCondition];
+
+      if (!fulfillment) {
+        // We don't have a fulfillment for this condition
+        logger.debug(`    - Payment received with an unknown condition: ${transfer.executionCondition}`);
+
+        plugin.rejectIncomingTransfer(transfer.id, {
+          code: `F05`,
+          name: `Wrong condition`,
+          message: `Unable to fulfill the condition:  ${transfer.executionCondition}`,
+          triggered_by: plugin.getAccount(),
+          triggered_at: new Date().toISOString(),
+          forwarded_by: [],
+          additional_info: {}
+        });
+      };
+
+      logger.debug(` 4. Accepted payment with condition ${transfer.executionCondition}.`);
+
+      logger.debug(`    - Fulfilling transfer on the ledger using fulfillment: ${base64url(fulfillment)}`);
+
+      // The ledger will check if the fulfillment is correct and
+      // if it was submitted before the transfer's rollback timeout
+      plugin.fulfillCondition(transfer.id, base64url(fulfillment))
+        .then(() => {
+          logger.info(`    - Payment complete`);
+        })
+        .catch(() => {
+          logger.error(`    - Error fulfilling the transfer`);
+        });
+    }
+  });
 });
